@@ -1,0 +1,16 @@
+.dictionary-item {
+  border-bottom: 1px solid #2ef196;
+}
+
+a {
+  color: #2ef196;
+}
+
+.underline {
+  border-bottom: 1px dashed #299;
+  padding-bottom: 1px;
+}
+
+li {
+  list-style: none
+}
