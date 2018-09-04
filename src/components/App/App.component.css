@@ -1,6 +1,7 @@
 .App {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   color: #444;
+  margin: 0 auto;
 }
 
 header {
@@ -20,6 +21,31 @@ header h4 {
 }
 
 main {
-  width: 980px;
   margin: 0 auto;
+}
+
+.loadingMessage {
+  margin: 50px auto;
+  text-align: center;
+}
+
+@media screen and (max-width: 767px) {
+  .App {
+    padding: 0 10px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .App {
+    width: 750px;
+  }
+}
+@media screen and (min-width: 992px) {
+  .App {
+    width: 970px;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .App {
+    width: 1170px;
+  }
 }

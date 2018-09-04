@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './QueryInputForm.component.css';
+import './QueryInputForm.css';
 
 const QueryInputForm = ({ query, updateQuery, searchQuery }) => (
   <form onSubmit={searchQuery}>
@@ -10,7 +10,7 @@ const QueryInputForm = ({ query, updateQuery, searchQuery }) => (
       placeholder="検索"
       onChange={updateQuery}
     />
-    <button type="submit">Search</button>
+    <button type="submit" disabled={!query}>Search</button>
   </form>
 );
 

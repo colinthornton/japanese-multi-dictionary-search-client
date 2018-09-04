@@ -1,18 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './DictionaryItem.component.css';
+
+import ContentList from './ContentList.component';
 
 const DictionaryItem = ({ dictionary }) => (
-  <div class="dictionary-item">
+  <div className="dictionary-item">
     <h3><a href={dictionary.url}>{dictionary.site}</a></h3>
-    <ol>
-      {dictionary.definitions.map((definition, i) => (
-        <li key={`${dictionary.site}-${i}`}>
-          <p class="word"><span class="underline">{definition.word}</span></p>
-          <p class="content">{definition.content}</p>
-        </li>
-      ))}
-    </ol>
+    {dictionary.content.length > 0
+      ? <ContentList content={dictionary.content} />
+      : <ul><li>No results. Try the {dictionary.site} page at <a href={dictionary.url}>{dictionary.url}</a></li></ul>
+    }
   </div>
 );
 
@@ -20,10 +17,10 @@ DictionaryItem.propTypes = {
   dictionary: PropTypes.shape({
     url: PropTypes.string,
     site: PropTypes.string,
-    definitions: PropTypes.arrayOf(
+    content: PropTypes.arrayOf(
       PropTypes.shape({
         word: PropTypes.string,
-        content: PropTypes.string,
+        definitions: PropTypes.arrayOf(PropTypes.string),
       }),
     ),
   }).isRequired,

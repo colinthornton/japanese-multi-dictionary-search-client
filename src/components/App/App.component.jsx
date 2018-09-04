@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.component.css';
 
-import DictionaryItem from '../DictionaryItem/DictionaryItem.component';
+import DictionaryList from '../Dictionary/DictionaryList.component';
 import QueryInputForm from '../QueryInputForm/QueryInputForm.component';
 
 class App extends Component {
@@ -9,15 +9,14 @@ class App extends Component {
     super(props);
     this.state = {
       query: '',
+      isLoading: false,
+      loadingMessage: 'Loading results for ',
+      interval: null,
       results: [],
     }
 
     this.updateQuery = this.updateQuery.bind(this);
     this.searchQuery = this.searchQuery.bind(this);
-  }
-  
-  componentDidMount() {
-    this.getSearchResults();
   }
 
   updateQuery(event) {
@@ -29,13 +28,37 @@ class App extends Component {
     event.preventDefault();
   }
 
+  setLoadingMessageUpdateInterval() {
+    const interval = setInterval(() => (
+        this.setState({
+          loadingMessage: this.state.loadingMessage + '.'
+        })
+      ), 250);
+    this.setState({ interval });
+  }
+
+  updateLoadingMessage(query) {
+    this.setState({
+      loadingMessage: this.state.loadingMessage + query
+    }, this.setLoadingMessageUpdateInterval);
+  }
+
   getSearchResults() {
     if (!!this.state.query) {
-      const searchURL = process.env.REACT_APP_API_URL + '/search?query=' + this.state.query;
+      this.setState({ isLoading: true });
+      this.updateLoadingMessage(this.state.query);
+      const searchURL = process.env.REACT_APP_API_URL + '/search?query=' + this.state.query.trim();
       fetch(searchURL)
         .then(response => response.json())
         .then(data => data.results)
-        .then(results => this.setState({ results }));
+        .then(results => {
+          clearInterval(this.state.interval);
+          this.setState({
+            isLoading: false,
+            loadingMessage: 'Loading results for ',
+            results
+          })
+        });
     }
   }
 
@@ -52,9 +75,10 @@ class App extends Component {
             updateQuery={this.updateQuery}
             searchQuery={this.searchQuery}
           />
-          {this.state.results.map((dictionary, i) => (
-            <DictionaryItem dictionary={dictionary} />
-          ))}
+          {this.state.isLoading
+            ? <div className="loadingMessage">{this.state.loadingMessage}</div>
+            : <DictionaryList dictionaries={this.state.results} />
+          }
         </main>
       </div>
     );

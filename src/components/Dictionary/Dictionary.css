@@ -6,11 +6,19 @@ a {
   color: #2ef196;
 }
 
+a:hover {
+  opacity: 0.75;
+}
+
 .underline {
   border-bottom: 1px dashed #299;
   padding-bottom: 1px;
 }
 
-li {
+ul {
   list-style: none
+}
+
+.definition-item {
+  line-height: 1.4em;
 }
