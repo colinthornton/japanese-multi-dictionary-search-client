@@ -5,13 +5,18 @@ import DictionaryList from '../Dictionary/DictionaryList.component';
 import QueryInputForm from '../QueryInputForm/QueryInputForm.component';
 
 class App extends Component {
+  apiUrl = process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_PROD_API_URL
+    : process.env.REACT_APP_DEV_API_URL;
+  timerInterval;
+
   constructor(props) {
     super(props);
     this.state = {
       query: '',
       isLoading: false,
-      loadingMessage: 'Loading results for ',
-      interval: null,
+      loadingMessage: '',
+      isApiError: false,
       results: [],
     }
 
@@ -29,36 +34,43 @@ class App extends Component {
   }
 
   setLoadingMessageUpdateInterval() {
-    const interval = setInterval(() => (
+    this.timerInterval = setInterval(() => (
         this.setState({
           loadingMessage: this.state.loadingMessage + '.'
         })
-      ), 250);
-    this.setState({ interval });
+      ), 500);
   }
 
   updateLoadingMessage(query) {
     this.setState({
-      loadingMessage: this.state.loadingMessage + query
+      isLoading: true,
+      loadingMessage: `Loading results for ${query}`
     }, this.setLoadingMessageUpdateInterval);
   }
 
   getSearchResults() {
     if (!!this.state.query) {
-      this.setState({ isLoading: true });
       this.updateLoadingMessage(this.state.query);
-      const searchURL = process.env.REACT_APP_API_URL + '/search?query=' + this.state.query.trim();
+      const searchURL = this.apiUrl + '/search?query=' + this.state.query.trim();
       fetch(searchURL)
         .then(response => response.json())
         .then(data => data.results)
         .then(results => {
-          clearInterval(this.state.interval);
+          clearInterval(this.timerInterval);
           this.setState({
             isLoading: false,
-            loadingMessage: 'Loading results for ',
+            isApiError: false,
             results
-          })
-        });
+          });
+        })
+        .catch(error => {
+          clearInterval(this.timerInterval);
+          this.setState({
+            isLoading: false,
+            isApiError: true,
+            results: [],
+          });
+        })
     }
   }
 
@@ -78,6 +90,10 @@ class App extends Component {
           {this.state.isLoading
             ? <div className="loadingMessage">{this.state.loadingMessage}</div>
             : <DictionaryList dictionaries={this.state.results} />
+          }
+          {this.state.isApiError
+            ? <div className="errorMessage">Couldn't contact the server. Try again in a few minutes.</div>
+            : null
           }
         </main>
       </div>
