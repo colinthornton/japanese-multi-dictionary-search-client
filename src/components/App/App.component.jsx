@@ -44,7 +44,8 @@ class App extends Component {
   updateLoadingMessage(query) {
     this.setState({
       isLoading: true,
-      loadingMessage: `Loading results for ${query}`
+      loadingMessage: `Loading results for ${query}`,
+      isApiError: false,
     }, this.setLoadingMessageUpdateInterval);
   }
 
