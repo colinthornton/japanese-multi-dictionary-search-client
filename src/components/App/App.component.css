@@ -25,7 +25,8 @@ main {
   margin: 0 auto;
 }
 
-.loadingMessage {
+.loadingMessage,
+.errorMessage {
   margin: 50px auto;
   text-align: center;
 }
